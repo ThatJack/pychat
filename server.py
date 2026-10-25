@@ -73,7 +73,7 @@ def handleClient(conn, addr):
 def disconnectClient(username, conn):
     #send disconnect message to all
 
-    print(f"{addr} has disconnected.")
+    print(f"{username} has disconnected.")
 
     usernames.remove(username)
     conn.close()
