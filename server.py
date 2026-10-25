@@ -89,7 +89,10 @@ def disconnectClient(username, conn):
     conn.close()
 
 def isUniqueUsername(username : str) -> bool:
-    return clients.count(username) == 0
-
+    for client in clients:
+        if client[0] == username:
+            return False
+    return True
+ 
 if __name__ == "__main__":
     startServer()
