@@ -5,7 +5,7 @@ HOST = ''
 PORT = 50013
 
 active = True
-usernames = []
+clients = []
 
 def startServer():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -19,6 +19,7 @@ def startServer():
 
     s.listen(1)
     s.setblocking(False)
+    print(f"Server started @ {HOST}:{PORT}")
 
     while active:
         try:
@@ -42,13 +43,14 @@ def handleClient(conn, addr):
 
         username = data.decode('utf-8')
         if (isUniqueUsername(username)):
-            print("ACCEPTED USERNAME:", username)
-            usernames.append(username)
+            #print("ACCEPTED USERNAME:", username)
+            clients.append((username, conn))
 
             conn.send("accepted".encode('utf-8'))
+            broadcast(f"{username} joined.", username)
             break
         else:
-            print("DENIED USERNAME", username, "(ALREADY EXISTS)")
+            #print("DENIED USERNAME", username, "(ALREADY EXISTS)")
             conn.send("denied".encode('utf-8'))
 
     while connected:
@@ -61,6 +63,8 @@ def handleClient(conn, addr):
 
         if message == "EXIT":
             connected = False
+        else:
+            broadcast(f"{username}> {message}", username)
 
     disconnectClient(username, conn)
 
@@ -70,17 +74,22 @@ def handleClient(conn, addr):
             global active
             active = False
 
+def broadcast(message, sender):
+    for client in clients:
+        if not client[0] == sender:
+            #print(f"Sender: {client[0]}, Socket: {client[1]}")
+            client[1].send(message.encode('utf-8'))
+
 def disconnectClient(username, conn):
     #send disconnect message to all
-
+    broadcast(f"{username} left.", username)
     print(f"{username} has disconnected.")
 
-    usernames.remove(username)
+    clients.remove((username, conn))
     conn.close()
 
 def isUniqueUsername(username : str) -> bool:
-    print("username count:", usernames.count(username))
-    return usernames.count(username) == 0
+    return clients.count(username) == 0
 
 if __name__ == "__main__":
     startServer()
