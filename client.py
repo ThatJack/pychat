@@ -14,6 +14,7 @@ def start():
         return
 
     response = ''
+    username = ''
     while not response == 'accepted':
         #ask for username
         username = input("Enter username: ")
@@ -27,7 +28,9 @@ def start():
 
             #server sends back status telling if its unique
             response = s.recv(1024).decode('utf-8')
-            print("SERVER:", response)
+
+            if response == 'denied':
+                print("Username already taken. Please choose a different name.")
             #loop again if not unique
 
         except Exception:
@@ -35,6 +38,13 @@ def start():
             break
 
     #procede to message loop
+    print
+    while True:
+        message = input(f"{username}> ")
+        s.send(message.encode('utf-8'))
+
+        if message == 'EXIT':
+            break
     s.close()
 
 if __name__ == "__main__":

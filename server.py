@@ -51,14 +51,32 @@ def handleClient(conn, addr):
             print("DENIED USERNAME", username, "(ALREADY EXISTS)")
             conn.send("denied".encode('utf-8'))
 
-    print(f"{addr} has disconnected.")
-    conn.close()
+    while connected:
+        #messaging loop
+        data = conn.recv(1024)
+        if not data:
+            break
+
+        message = data.decode('utf-8')
+
+        if message == "EXIT":
+            connected = False
+
+    disconnectClient(username, conn)
 
     if(threading.active_count() - 2 == 0):
         end = input("No active connections. Close server? [y/n] ")
         if end.lower() == 'y' or end.lower() == 'yes':
             global active
             active = False
+
+def disconnectClient(username, conn):
+    #send disconnect message to all
+
+    print(f"{addr} has disconnected.")
+
+    usernames.remove(username)
+    conn.close()
 
 def isUniqueUsername(username : str) -> bool:
     print("username count:", usernames.count(username))
