@@ -1,6 +1,5 @@
 import socket
 import threading
-import sys
 
 HOST = ''
 PORT = 50013
@@ -14,12 +13,9 @@ def receive(user, s):
         data = s.recv(1024)
         message = data.decode('utf-8')
 
-        sys.stdout.flush()
-        sys.stdout.write('\033[2K\033[1G')
-        sys.stdout.flush()
+        print('\033[2K\033[1G', end='', flush=True)
         print(message, end='', flush=True)
-        sys.stdout.write('\033[E')
-        sys.stdout.flush()
+        print('\033[E', end='', flush=True)
         print(f"{user}> ", end='', flush=True)
 
 def start():
