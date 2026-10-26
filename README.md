@@ -15,7 +15,7 @@
 * Run server.py first (Allow python through firewall)
 * Run client.py (multiple times for multiple clients)
 
-In my testing, Windows Firewall can cause some errors when exiting the client, but it should still work perfectly fine.<br>
+Due to how daemon threads are handled on Windows you may see an error before the client window closes when exiting, but shouldn't cause any issues<br>
 For this reason, I recommend running on Linux.<br>
 
 # Design Overview
