@@ -10,13 +10,16 @@ def receive(user, s):
     global active
 
     while active:
-        data = s.recv(1024)
-        message = data.decode('utf-8')
+        try:
+            data = s.recv(1024)
+            message = data.decode('utf-8')
 
-        print('\033[2K\033[1G', end='', flush=True)
-        print(message, end='', flush=True)
-        print('\033[E', end='', flush=True)
-        print(f"{user}> ", end='', flush=True)
+            print('\033[2K\033[1G', end='', flush=True)
+            print(message, end='', flush=True)
+            print('\033[E', end='', flush=True)
+            print(f"{user}> ", end='', flush=True)
+        except ConnectionAbortedError:
+            pass
 
 def start():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
