@@ -1,7 +1,7 @@
 import socket
 import threading
 
-HOST = ''
+HOST = '127.0.0.1'
 PORT = 50013
 
 active = True
@@ -36,6 +36,7 @@ def startServer():
 def handleClient(conn, addr):
     print(f"New Connection @ {addr}")
     connected = True
+    conn.setblocking(True)
 
     while True:
         #get client username
